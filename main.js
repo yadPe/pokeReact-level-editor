@@ -77,6 +77,35 @@ const allowDrop = e => {
 }
 
 
-const exportMatrix = () =>{
+const exportMatrix = () => {
+    let output = [];
+    for (let i = 0, row; row = table.rows[i]; i++) {
+        //iterate through rows
+        //rows would be accessed using the "row" variable assigned in the for loop
+        let rowOut = [];
 
+        for (let j = 0, cell; cell = row.cells[j]; j++) {
+            //iterate through columns
+            //columns would be accessed using the "col" variable assigned in the for loop
+            //console.log(cell.firstChild)
+            rowOut.push(cell.firstChild ?  cell.firstChild.id : 1)
+        }
+
+        output.push(rowOut);
+    }
+    return output
 }
+
+
+document.getElementById('fileUpload')
+    .addEventListener('change', loadFiles, false);
+
+
+
+    function loadFiles(e) {
+        let files = event.target.files || e.originalTarget.files;
+    
+        for (let i = 0; i < files.length; i++) {
+            
+        }
+    }
