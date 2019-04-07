@@ -1,0 +1,41 @@
+table td {
+    width: 32px;
+    height:32px;
+        padding: 0;
+    margin: 0;
+    border: 1px solid darkgray;
+}
+table span {
+    display:block;
+    background-color: #ccc;
+    color: fff;
+    height: 32px;
+    width: 32px;
+    padding: 0;
+    margin: 0;
+}
+
+table{
+    border: 1px solid black;
+}
+
+#oops{
+    background-image: url('https://i.imgur.com/snZcq7r.png');
+    background-position: center;
+    background-size: cover;
+    height: 32px;
+    width: 32px;
+}
+
+#oopsii{
+    background-image: url('https://i.imgur.com/snZcq7r.png');
+    background-position: center;
+    background-size: cover;
+    height: 32px;
+    width: 32px;
+    filter: invert(100);
+}
+
+#assets{
+    margin-top: 50px;
+}
