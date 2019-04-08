@@ -37,5 +37,13 @@ table{
 }
 
 #assets{
-    margin-top: 50px;
+    margin: 10px auto;
+    text-align: center
+}
+
+.dragItem{
+    background-position: center;
+    background-size: cover;
+    height: 32px;
+    width: 32px;
 }

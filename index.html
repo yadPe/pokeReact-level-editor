@@ -12,33 +12,22 @@
 
 
     <input type="file" id="fileUpload" webkitdirectory directory multiple /><br>
+    <nav>
+        <input type="number" oninput="updateGrid(event)" id="width" placeholder="width"></input>
+        <input type="number" oninput="updateGrid(event)" id="height" placeholder="height"></input>
+        <button id="exportBtn">Export</button>
+    </nav>
+    
 
-    <div id="itemLists"></div>
+    <input type="text" id="filter" placeholder="search" oninput="filterAssets(event)"/>
+    <table id="assets"></table>
 
     <div id="editor">
         <table id="editorGrid"></table>
     </div>
 
 
-    <table id="assets">
-        <tr>
-            <td>
-                <div class="dragItem" id="oopsii"></div>
-            </td>
-            <td>
-                <div class="dragItem" id="oops"></div>
-            </td>
-            <td>
-                <div class="dragItem" id="oopsii"></div>
-            </td>
-            <td>
-                <div class="dragItem" id="oops"></div>
-            </td>
-            <td>
-                <div class="dragItem" id="oopsii"></div>
-            </td>
-        </tr>
-    </table>
+    
 
 
 
