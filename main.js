@@ -1,35 +1,68 @@
-const table = document.getElementById('editorGrid');
-const dragItems = document.getElementsByClassName('dragItem');
-const assetsTable = document.getElementById('assets');
-const exportBtn = document.getElementById('exportBtn');
 const editor = {
     blockX: 1,
     blockY: 1
 }
+const makeGrid = () => {
+    for (let i = 0; i < editor.blockY; i++) {
+        let row = document.createElement('tr');
+        row.className = `tr${i}`
+        table.appendChild(row)
+        for (let j = 0; j < editor.blockX; j++) {
+            let cell = document.createElement('td')
+            cell.className = `td${j}`
+            row.appendChild(cell)
+        }
+    }
+}
+
+
+const loadExistingTable = (myArray) => {
+    var result = "<table id='editorGrid'>";
+    for (var i = 0; i < myArray.length; i++) {
+        result += "<tr>";
+        for (var j = 0; j < myArray[i].length; j++) {
+            result += `<td><div class='dragItem' id='${myArray[i][j]}'></div></td>`;
+        }
+        result += "</tr>";
+    }
+    result += "</table>";
+
+    return result;
+}
+
+
+
+const table = document.getElementById('editorGrid');
+const dragItems = document.getElementsByClassName('dragItem');
+const assetsTable = document.getElementById('assets');
+const exportBtn = document.getElementById('exportBtn');
+const resetBtn = document.getElementById('resetBtn');
+
+let lastClick;
 
 editor.blockX = localStorage.getItem('width') || 1
 editor.blockY = localStorage.getItem('height') || 1
-let lastClick;
 
 
 table.ondrop = (e) => drop(e)
 table.ondragover = (e) => allowDrop(e)
 
 
-const click = e => {
-    console.log(e)
-    if (e.target.id === 'editorGrid') {
-        return
-    }
-    if (!e.target.classList.contains('dragItem')) {
-        //alert('sss')
-        e.target.appendChild(document.getElementById(lastClick).cloneNode());
-    }
-    if (e.target.classList.contains('dragItem')) {
-        lastClick = e.target.id;
-        console.log(lastClick)
-    }
 
+const resetEditor = () =>{
+    while (table.hasChildNodes()) {
+        table.removeChild(table.firstChild);
+    }
+    makeGrid();
+    localStorage.removeItem('export');
+}
+resetBtn.addEventListener('click', resetEditor)
+const click = e => {
+    if (e.target.id === 'editorGrid') return
+    if (!e.target.classList.contains('dragItem'))
+        e.target.appendChild(document.getElementById(lastClick).cloneNode());
+    if (e.target.classList.contains('dragItem'))
+        lastClick = e.target.id;
 }
 
 table.addEventListener('click', click)
@@ -40,13 +73,6 @@ for (let i = 0; i < dragItems.length; i++) {
     dragItems[i].addEventListener('click', click)
 }
 
-table.addEventListener('contextmenu', (e) => {
-    e.preventDefault();
-    console.log(e.target)
-    if (e.target.className !== 'dragItem') return
-    e.target.parentElement.removeChild(e.target)
-    //table.removeChild(e.target)
-})
 
 
 const drag = e => {
@@ -63,7 +89,6 @@ const allowDrop = e => {
     e.preventDefault();
 }
 
-const imagesAssets = [];
 
 document.getElementById('fileUpload')
     .addEventListener('change', loadFiles, false);
@@ -71,58 +96,48 @@ document.getElementById('fileUpload')
 
 
 function loadFiles(e) {
-    let files = event.target.files || e.originalTarget.files;
-    let pos = 0;
-    let rowNum = 0;
+    const files = event.target.files || e.originalTarget.files;
 
     const rowLength = files.length / 4
     for (let i = 0; i < rowLength; i++) {
-        const row = assetsTable.insertRow(rowNum)
+        const row = assetsTable.insertRow(0)
     }
 
     for (let i = 0; i < files.length; i++) {
 
-        let fileType = files[i].name.split('.').pop();
-        let fileCategory = files[i].name.split('-').slice()[0];
-        let fileId = files[i].name.split('-')[1].split('.').slice()[0];
+        const fileType = files[i].name.split('.').pop();
+        const fileCategory = files[i].name.split('-').slice()[0];
+        const fileId = files[i].name.split('-')[1].split('.').slice()[0];
 
-        imagesAssets.push(new Image());
-        imagesAssets[i].src = URL.createObjectURL(files[i]);
-
-        const row = assetsTable.rows[rowNum]
-        const cell = row.insertCell(pos);
+        const row = assetsTable.rows[0]
+        const cell = row.insertCell(0);
 
         const tile = document.createElement('div');
         tile.className = `dragItem ${fileCategory}`
         tile.style.backgroundImage = `url(${URL.createObjectURL(files[i])})`
+
+        const style = document.createElement('style');
+        style.type = 'text/css';
+        const css = `[id='${fileId}'] {background-image: url(${URL.createObjectURL(files[i])})}; `
+        style.appendChild(document.createTextNode(css));
+        document.head.appendChild(style);
+
         tile.setAttribute('id', fileId)
         tile.addEventListener('click', click)
         cell.appendChild(tile)
     }
+
+
 }
 
 
-const makeGrid = () => {
-    for (let i = 0; i < editor.blockY; i++) {
-        let row = document.createElement('tr');
-        row.className = `tr${i}`
-        table.appendChild(row)
-        for (let j = 0; j < editor.blockX; j++) {
-            let cell = document.createElement('td')
-            cell.className = `td${j}`
-            row.appendChild(cell)
-        }
-    }
-}
 
-makeGrid()
 
 const updateGrid = (e) => {
     while (table.hasChildNodes()) {
         table.removeChild(table.firstChild);
     }
 
-    console.log(e.target.value)
     if (e.target.id === 'width') {
         editor.blockX = e.target.value
         localStorage.setItem('width', e.target.value)
@@ -131,6 +146,7 @@ const updateGrid = (e) => {
         editor.blockY = e.target.value
         localStorage.setItem('height', e.target.value)
     }
+    localStorage.setItem('export', JSON.stringify(output))
     makeGrid()
 
 }
@@ -171,17 +187,13 @@ setInterval(exportMatrix, 35000)
 
 const filterAssets = (e) => {
     const query = e.target.value
-    let tr = assetsTable.getElementsByTagName("td");
-    console.log(query)
+    const tr = assetsTable.getElementsByTagName("td");
 
-    console.log(tr.length)
     for (i = 0; i < tr.length; i++) {
         td = tr[i].getElementsByTagName("div")[0];
-        console.log(td)
         if (td) {
             txtValue = td.className.split(' ')[1]
-            console.log( td.className.split(' ')[1] )
-            if (txtValue.indexOf(query) > -1) {
+            if (txtValue.includes(query)) {
                 td.style.display = "";
             } else {
                 td.style.display = "none";
@@ -189,3 +201,20 @@ const filterAssets = (e) => {
         }
     }
 }
+
+
+if (localStorage.getItem('export')) {
+    const ed = document.getElementById('editor');
+    ed.innerHTML = loadExistingTable(JSON.parse(localStorage.getItem('export')))
+    table = document.getElementById('editorGrid');
+} else {
+    makeGrid()
+}
+
+
+
+table.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    if (!e.target.classList.contains('dragItem')) return
+    e.target.parentElement.removeChild(e.target)
+})

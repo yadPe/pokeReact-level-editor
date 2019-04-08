@@ -19,23 +19,6 @@ table{
     border: 1px solid black;
 }
 
-#oops{
-    background-image: url('./snZcq7r.png');
-    background-position: center;
-    background-size: cover;
-    height: 32px;
-    width: 32px;
-}
-
-#oopsii{
-    background-image: url('./snZcq7r.png');
-    background-position: center;
-    background-size: cover;
-    height: 32px;
-    width: 32px;
-    filter: invert(100);
-}
-
 #assets{
     margin: 10px auto;
     text-align: center

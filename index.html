@@ -10,14 +10,13 @@
 
 <body>
 
-
     <input type="file" id="fileUpload" webkitdirectory directory multiple /><br>
     <nav>
         <input type="number" oninput="updateGrid(event)" id="width" placeholder="width"></input>
         <input type="number" oninput="updateGrid(event)" id="height" placeholder="height"></input>
         <button id="exportBtn">Export</button>
+        <button id="resetBtn">Reset</button>
     </nav>
-    
 
     <input type="text" id="filter" placeholder="search" oninput="filterAssets(event)"/>
     <table id="assets"></table>
@@ -26,17 +25,6 @@
         <table id="editorGrid"></table>
     </div>
 
-
-    
-
-
-
-
-
-    </section>
-    <script src="http://code.jquery.com/jquery-2.2.4.min.js"
-        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
-    <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <script src="main.js"></script>
 </body>
 
