@@ -32,7 +32,7 @@ const loadExistingTable = (myArray) => {
 
 
 
-const table = document.getElementById('editorGrid');
+let table = document.getElementById('editorGrid');
 const dragItems = document.getElementsByClassName('dragItem');
 const assetsTable = document.getElementById('assets');
 const exportBtn = document.getElementById('exportBtn');
@@ -49,12 +49,21 @@ table.ondragover = (e) => allowDrop(e)
 
 
 
-const resetEditor = () =>{
+const resetEditor = () => {
     while (table.hasChildNodes()) {
         table.removeChild(table.firstChild);
     }
-    makeGrid();
     localStorage.removeItem('export');
+    makeGrid();
+
+    table.addEventListener('click', click)
+
+    table.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        if (!e.target.classList.contains('dragItem')) return
+        e.target.parentElement.removeChild(e.target)
+    })
+
 }
 resetBtn.addEventListener('click', resetEditor)
 const click = e => {
@@ -65,7 +74,7 @@ const click = e => {
         lastClick = e.target.id;
 }
 
-table.addEventListener('click', click)
+
 
 for (let i = 0; i < dragItems.length; i++) {
     dragItems[i].draggable = true;
@@ -146,7 +155,6 @@ const updateGrid = (e) => {
         editor.blockY = e.target.value
         localStorage.setItem('height', e.target.value)
     }
-    localStorage.setItem('export', JSON.stringify(output))
     makeGrid()
 
 }
@@ -209,12 +217,37 @@ if (localStorage.getItem('export')) {
     table = document.getElementById('editorGrid');
 } else {
     makeGrid()
+    table = document.getElementById('editorGrid');
 }
 
-
+table.addEventListener('click', click)
 
 table.addEventListener('contextmenu', (e) => {
     e.preventDefault();
     if (!e.target.classList.contains('dragItem')) return
     e.target.parentElement.removeChild(e.target)
 })
+
+
+//Import 
+
+importBtn = document.getElementById('importBtn')
+
+
+const importArr = (e) => {
+    const ed = document.getElementById('editor');
+    ed.innerHTML = loadExistingTable(JSON.parse(document.getElementById('import').value))
+    
+    table = document.getElementById('editorGrid');
+
+    table.addEventListener('click', click)
+
+    table.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        if (!e.target.classList.contains('dragItem')) return
+        e.target.parentElement.removeChild(e.target)
+    })
+
+}
+
+importBtn.addEventListener('click', importArr)
