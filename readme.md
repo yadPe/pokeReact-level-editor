@@ -23,9 +23,9 @@
 
 ## how to name a tile image file :
 
-`category`-`uniqueId`.`imageFormatExtension`
+`uniqueId`-`category`.`imageFormatExtension`
 
-exemple : `tree-6.jpg`
+exemple : `6-tree.jpg`
 
 * `category` is used to group tiles by category and for search
 
