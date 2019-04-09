@@ -10,18 +10,23 @@
 
 <body>
 
-    <input type="file" id="fileUpload" webkitdirectory directory multiple /><br>
+    <div id='importContainer'>
+        <input type="file" id="fileUpload" webkitdirectory directory multiple />
+        <input id="import" placeholder="import Array"></input>
+        <button id="importBtn">Import</button>
+    </div>
     <nav>
         <input type="number" oninput="updateGrid(event)" id="width" placeholder="width"></input>
         <input type="number" oninput="updateGrid(event)" id="height" placeholder="height"></input>
         <button id="exportBtn">Export</button>
         <button id="resetBtn">Reset</button>
-        <input id="import" placeholder="import Array"></input>
-        <button id="importBtn">Import</button>
+
     </nav>
 
-    <input type="text" id="filter" placeholder="search" oninput="filterAssets(event)"/>
-    <table id="assets"></table>
+    <div id="assetsContainer">
+        <input type="text" id="filter" placeholder="search tiles" oninput="filterAssets(event)" />
+        <table id="assets"></table>
+    </div>
 
     <div id="editor">
         <table id="editorGrid"></table>

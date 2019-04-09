@@ -19,7 +19,7 @@ table{
     border: 1px solid black;
 }
 
-#assets{
+#assetsContainer, #assets{
     margin: 10px auto;
     text-align: center
 }
@@ -29,4 +29,15 @@ table{
     background-size: cover;
     height: 32px;
     width: 32px;
+}
+
+#editorGrid{
+    margin: 0 auto;
+    text-align: center
+}
+
+nav{
+    margin: 10px auto;
+    margin-top: 50px;
+    text-align: center
 }
