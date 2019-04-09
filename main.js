@@ -115,8 +115,8 @@ function loadFiles(e) {
     for (let i = 0; i < files.length; i++) {
 
         const fileType = files[i].name.split('.').pop();
-        const fileCategory = files[i].name.split('-').slice()[0];
-        const fileId = files[i].name.split('-')[1].split('.').slice()[0];
+        const fileCategory = files[i].name.split('-')[1].split('.').slice()[0];
+        const fileId = files[i].name.split('-').slice()[0];
 
         const row = assetsTable.rows[0]
         const cell = row.insertCell(0);
