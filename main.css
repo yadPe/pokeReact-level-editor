@@ -21,7 +21,17 @@ table{
 
 #assetsContainer, #assets{
     margin: 10px auto;
-    text-align: center
+    text-align: center;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    height: 100px;
+
+}
+
+#filter{
+    margin: 10px auto;
+    text-align: center;
+    margin: 0 auto
 }
 
 .dragItem{

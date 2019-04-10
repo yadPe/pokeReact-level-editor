@@ -112,6 +112,8 @@ function loadFiles(e) {
         const row = assetsTable.insertRow(0)
     }
 
+    const tilesDB = {}
+
     for (let i = 0; i < files.length; i++) {
 
         const fileType = files[i].name.split('.').pop();
@@ -129,12 +131,25 @@ function loadFiles(e) {
         style.type = 'text/css';
         const css = `[id='${fileId}'] {background-image: url(${URL.createObjectURL(files[i])})}; `
         style.appendChild(document.createTextNode(css));
-        document.head.appendChild(style);
+        document.head.appendChild(style); 
+
+
+        // ./tiles/
+        // //
+        
+        tilesDB[fileId] = `../../../assets/tiles/${files[i].name}`
+        
+
+
+        // //
+
+
 
         tile.setAttribute('id', fileId)
         tile.addEventListener('click', click)
         cell.appendChild(tile)
     }
+    console.log(JSON.stringify(tilesDB))
 
 
 }
