@@ -17,16 +17,18 @@ const makeGrid = () => {
 
 
 const loadExistingTable = (myArray) => {
-    var result = "<table id='editorGrid'>";
-    for (var i = 0; i < myArray.length; i++) {
+    let result = "<table id='editorGrid'>";
+    for (let i = 0; i < myArray.length; i++) {
         result += "<tr>";
-        for (var j = 0; j < myArray[i].length; j++) {
-            result += `<td><div class='dragItem' id='${myArray[i][j]}'></div></td>`;
+        for (let j = 0; j < myArray[i].length; j++) {
+            result += '<td>'
+            for (let h = 0; h < myArray[i][j].length; h++)
+                result += `<div class='dragItem' id='${myArray[i][j][h]}'></div>`;
+            result += '</td>'
         }
         result += "</tr>";
     }
     result += "</table>";
-
     return result;
 }
 
