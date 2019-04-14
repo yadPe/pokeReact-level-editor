@@ -27,7 +27,7 @@
 
 `category`-`id`-`tags`-`collide(0/1)`.`imageFormatExtension`
 
-exemple : `vegetation-tree-6-1.jpg`
+exemple : `vegetation-6-tree-1.jpg`
 
 * `category` is used to group tiles and define the position on the plan
     * Terrain [`z-index: 0`] (grass, path, water, sand, etc..)
