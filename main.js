@@ -31,14 +31,13 @@ const loadExistingTable = (myArray) => {
 }
 
 
-
 let table = document.getElementById('editorGrid');
 const dragItems = document.getElementsByClassName('dragItem');
 const assetsTable = document.getElementById('assets');
 const exportBtn = document.getElementById('exportBtn');
 const resetBtn = document.getElementById('resetBtn');
 
-let lastClick;
+let lastClick = {};
 
 editor.blockX = localStorage.getItem('width') || 1
 editor.blockY = localStorage.getItem('height') || 1
@@ -66,23 +65,33 @@ const resetEditor = () => {
 
 }
 resetBtn.addEventListener('click', resetEditor)
+
 const click = e => {
     if (e.target.id === 'editorGrid') return
-    if (!e.target.classList.contains('dragItem'))
-        e.target.appendChild(document.getElementById(lastClick).cloneNode());
-    if (e.target.classList.contains('dragItem'))
-        lastClick = e.target.id;
+    if (e.target.classList.contains('dragItem') && e.target.parentElement.parentElement.parentElement.parentElement.id === 'assets'){
+        lastClick.id = e.target.id;
+        lastClick.category = e.target.classList[1]
+        return
+    }
+    if (lastClick.id && e.target.parentElement.nodeName == 'TR'){
+        e.target.appendChild(document.getElementById(lastClick.id).cloneNode());
+        return
+    }
+    if (lastClick.id && e.target.parentElement.nodeName == 'TD'){
+        for (let i = 0; i< e.target.parentNode.childNodes.length; i++){
+            if (e.target.parentNode.childNodes[i].id === lastClick.id) return
+            if (e.target.parentNode.childNodes[i].classList.contains(lastClick.category)) return
+        }
+        e.target.parentElement.appendChild(document.getElementById(lastClick.id).cloneNode());
+        return
+    }
 }
-
-
 
 for (let i = 0; i < dragItems.length; i++) {
     dragItems[i].draggable = true;
     dragItems[i].ondragstart = (e) => drag(e)
     dragItems[i].addEventListener('click', click)
 }
-
-
 
 const drag = e => {
     e.dataTransfer.setData("text", e.target.id);
@@ -98,10 +107,8 @@ const allowDrop = e => {
     e.preventDefault();
 }
 
-
 document.getElementById('fileUpload')
     .addEventListener('change', loadFiles, false);
-
 
 
 function loadFiles(e) {
@@ -112,48 +119,34 @@ function loadFiles(e) {
         const row = assetsTable.insertRow(0)
     }
 
-    const tilesDB = {}
-
     for (let i = 0; i < files.length; i++) {
 
+        const fileCategory = files[i].name.split('-').slice()[0];
+        const fileId = files[i].name.split('-')[1].slice()[0];
+        const fileTags = files[i].name.split('-')[2].split('.').slice()[0];
+        const fileCollide = files[i].name.split('-')[3].split('.').slice()[0];
         const fileType = files[i].name.split('.').pop();
-        const fileCategory = files[i].name.split('-')[1].split('.').slice()[0];
-        const fileId = files[i].name.split('-').slice()[0];
+        let zIndex = 0;
+        if (fileCategory === 'vegetation')
+            zIndex = 20
 
         const row = assetsTable.rows[0]
         const cell = row.insertCell(0);
 
         const tile = document.createElement('div');
-        tile.className = `dragItem ${fileCategory}`
+        tile.className = `dragItem ${fileCategory} ${fileTags} ${fileCollide === 1 ? 'collide' : ''}`
         tile.style.backgroundImage = `url(${URL.createObjectURL(files[i])})`
 
         const style = document.createElement('style');
         style.type = 'text/css';
-        const css = `[id='${fileId}'] {background-image: url(${URL.createObjectURL(files[i])})}; `
+        const css = `[id='${fileId}'] {background-image: url(${URL.createObjectURL(files[i])}); \n z-index: ${zIndex}}`
         style.appendChild(document.createTextNode(css));
         document.head.appendChild(style); 
-
-
-        // ./tiles/
-        // //
-        
-        tilesDB[fileId] = `../../../assets/tiles/${files[i].name}`
-        
-
-
-        // //
-
-
-
         tile.setAttribute('id', fileId)
         tile.addEventListener('click', click)
         cell.appendChild(tile)
     }
-    console.log(JSON.stringify(tilesDB))
-
-
 }
-
 
 
 
@@ -175,14 +168,15 @@ const updateGrid = (e) => {
 }
 
 const exportMatrix = (clicked) => {
-    let output = [];
+    const output = [];
     for (let i = 0, row; row = table.rows[i]; i++) {
-        let rowOut = [];
-
+        const rowOut = [];
         for (let j = 0, cell; cell = row.cells[j]; j++) {
-            rowOut.push(parseInt(cell.firstChild ? cell.firstChild.id : 0))
+            const cellOut = []
+            for (let h = 0; h < row.cells[j].childNodes.length; h++)
+                cellOut.push(parseInt(row.cells[j].childNodes[h].id) || 0)
+            rowOut.push(cellOut)
         }
-
         output.push(rowOut);
     }
     localStorage.setItem('export', JSON.stringify(output))
@@ -215,7 +209,7 @@ const filterAssets = (e) => {
     for (i = 0; i < tr.length; i++) {
         td = tr[i].getElementsByTagName("div")[0];
         if (td) {
-            txtValue = td.className.split(' ')[1]
+            txtValue = td.className.split(' ')[1] + td.className.split(' ')[2]
             if (txtValue.includes(query)) {
                 td.style.display = "";
             } else {

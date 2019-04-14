@@ -1,5 +1,7 @@
 # PokeReact level editor
 
+[Available here](https://yadpe.github.io/pokeReact-level-editor/)
+
 ## Features
 
 * Create / Edit / Import / Export levels 
@@ -23,12 +25,19 @@
 
 ## how to name a tile image file :
 
-`uniqueId`-`category`.`imageFormatExtension`
+`category`-`id`-`tags`-`collide(0/1)`.`imageFormatExtension`
 
-exemple : `6-tree.jpg`
+exemple : `vegetation-tree-6-1.jpg`
 
-* `category` is used to group tiles by category and for search
+* `category` is used to group tiles and define the position on the plan
+    * Terrain [`z-index: 0`] (grass, path, water, sand, etc..)
+    * Player [`z-index: 10`]
+    * Vegetation [`z-index: 20`] (three, rock, bush, building, etc..)
 
-* `uniqueId` is the int used in the martix to identify tiles
+* `id` is a integer used in the martix to identify tiles **It must be unique**
 
-The player can't cross tiles with id above 50
+* `tags` are used when searching for a tile in the editor
+
+* `collide(0/1)` is a integer `0` or `1` that is used by the game to define if the player can step on the tile or not. `0` no collide, `1` collide.
+
+Tiles placed in the tiles folder are automaticly loaded by the game
