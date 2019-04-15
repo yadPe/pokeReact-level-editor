@@ -34,7 +34,7 @@ exemple : `vegetation-6-tree-1.jpg`
     * Player [`z-index: 10`]
     * Vegetation [`z-index: 20`] (three, rock, bush, building, etc..)
 
-* `id` is a integer used in the martix to identify tiles **It must be unique**
+* `id` is a integer used in the martix to identify tiles **It must be unique and id 1 is reserved for colisions**
 
 * `tags` are used when searching for a tile in the editor
 
