@@ -72,7 +72,7 @@ const click = e => {
     if (e.target.id === 'editorGrid') return
     if (e.target.classList.contains('dragItem') && e.target.parentElement.parentElement.parentElement.parentElement.id === 'assets'){
         lastClick.id = e.target.id;
-        lastClick.category = e.target.classList[1]
+        //lastClick.category = e.target.classList[1]
         return
     }
     if (lastClick.id && e.target.parentElement.nodeName == 'TR'){
@@ -82,7 +82,7 @@ const click = e => {
     if (lastClick.id && e.target.parentElement.nodeName == 'TD'){
         for (let i = 0; i< e.target.parentNode.childNodes.length; i++){
             if (e.target.parentNode.childNodes[i].id === lastClick.id) return
-            if (e.target.parentNode.childNodes[i].classList.contains(lastClick.category)) return
+            //if (e.target.parentNode.childNodes[i].classList.contains(lastClick.category)) return
         }
         e.target.parentElement.appendChild(document.getElementById(lastClick.id).cloneNode());
         return
@@ -123,20 +123,19 @@ function loadFiles(e) {
 
     for (let i = 0; i < files.length; i++) {
 
-        const fileCategory = files[i].name.split('-').slice()[0];
-        const fileId = files[i].name.split('-')[1].slice()[0];
-        const fileTags = files[i].name.split('-')[2].split('.').slice()[0];
+        const fileId = files[i].name.split('-').slice()[0];
+        const fileTags = files[i].name.split('-')[1].slice()[0];
+        const fileZIndex = files[i].name.split('-')[2].split('.').slice()[0];
         const fileCollide = files[i].name.split('-')[3].split('.').slice()[0];
         const fileType = files[i].name.split('.').pop();
-        let zIndex = 0;
-        if (fileCategory === 'vegetation')
-            zIndex = 20
+        let zIndex = parseInt(fileZIndex.substring(1, fileZIndex.length));
+        console.log(zIndex)
 
         const row = assetsTable.rows[0]
         const cell = row.insertCell(0);
 
         const tile = document.createElement('div');
-        tile.className = `dragItem ${fileCategory} ${fileTags} ${fileCollide === 1 ? 'collide' : ''}`
+        tile.className = `dragItem ${fileTags} ${fileCollide === 1 ? 'collide' : ''}`
         tile.style.backgroundImage = `url(${URL.createObjectURL(files[i])})`
 
         const style = document.createElement('style');
