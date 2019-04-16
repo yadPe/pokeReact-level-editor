@@ -21,9 +21,14 @@ const loadExistingTable = (myArray) => {
     for (let i = 0; i < myArray.length; i++) {
         result += "<tr>";
         for (let j = 0; j < myArray[i].length; j++) {
-            result += '<td>'
-            for (let h = 0; h < myArray[i][j].length; h++)
-                result += `<div class='dragItem' id='${myArray[i][j][h]}'></div>`;
+            result += '<td>';
+            for (let h = 0; h < myArray[i][j].length; h++){
+                if (myArray[i][j][h] === -1){
+                    result += `<div class='dragItem collide' id='${myArray[i][j][h]}'></div>`;
+                } else {
+                    result += `<div class='dragItem ' id='${myArray[i][j][h]}'></div>`;
+                }
+            }
             result += '</td>'
         }
         result += "</tr>";
@@ -158,7 +163,7 @@ function loadFiles(e) {
 
 
 
-const updateGrid = (e) => {
+const updateGrid = e => {
     while (table.hasChildNodes()) {
         table.removeChild(table.firstChild);
     }
@@ -175,7 +180,7 @@ const updateGrid = (e) => {
 
 }
 
-const exportMatrix = (clicked) => {
+const exportMatrix = clicked => {
     const output = [];
     for (let i = 0, row; row = table.rows[i]; i++) {
         const rowOut = [];
@@ -185,18 +190,12 @@ const exportMatrix = (clicked) => {
             for (let h = 0; h < row.cells[j].childNodes.length; h++){
                 if (row.cells[j].childNodes[h].classList.contains('collide')) 
                     collide = true;
-                // cellOut.push(parseInt(row.cells[j].childNodes[h].id) != null ?  parseInt(row.cells[j].childNodes[h].id) : 0)
-                // console.log(parseInt(row.cells[j].childNodes[h].id) != null)
-                if (parseInt(row.cells[j].childNodes[h].id) != null) {
-                    cellOut.push(parseInt(row.cells[j].childNodes[h].id))
-                }     
-                else {
-                    cellOut.push(0)
-                }  
+                cellOut.push(parseInt(row.cells[j].childNodes[h].id) || 0);
             }
+            if (row.cells[j].childNodes.length < 1)
+                cellOut.push(0)
             if ( collide)
                 cellOut.push(-1)
-            //console.log(row.cells[j].childNodes)  
             rowOut.push(cellOut)
         }
         output.push(rowOut);
@@ -233,9 +232,9 @@ const filterAssets = (e) => {
         if (td) {
             txtValue = td.className.split(' ')[1] + td.className.split(' ')[2]
             if (txtValue.includes(query)) {
-                td.style.display = "";
+                td.style.opacity = 1;
             } else {
-                td.style.display = "none";
+                td.style.opacity = 0.17;
             }
         }
     }
