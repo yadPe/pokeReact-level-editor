@@ -121,21 +121,28 @@ function loadFiles(e) {
         const row = assetsTable.insertRow(0)
     }
 
+    assetsTable.width = 35 * files.length;
+
     for (let i = 0; i < files.length; i++) {
 
         const fileId = files[i].name.split('-').slice()[0];
-        const fileTags = files[i].name.split('-')[1].slice()[0];
+        const fileTags = files[i].name.split('-')[1];
         const fileZIndex = files[i].name.split('-')[2].split('.').slice()[0];
-        const fileCollide = files[i].name.split('-')[3].split('.').slice()[0];
+        const fileCollide = files[i].name.split('-')[3].split('.').slice()[0].substring(files[i].name.split('-')[3].split('.').slice()[0].indexOf('(')).replace('(', '').replace(')', '');
         const fileType = files[i].name.split('.').pop();
         let zIndex = parseInt(fileZIndex.substring(1, fileZIndex.length));
-        console.log(zIndex)
+        // if (!parseInt(zIndex)){
+        //     console.log(files[i].name)
+        //     console.log(fileZIndex, zIndex)
+        // }
+        //console.log(fileCollide)
+        
 
         const row = assetsTable.rows[0]
         const cell = row.insertCell(0);
 
         const tile = document.createElement('div');
-        tile.className = `dragItem ${fileTags} ${fileCollide === 1 ? 'collide' : ''}`
+        tile.className = `dragItem ${fileTags} ${fileCollide == 1 ? 'collide' : ''}`
         tile.style.backgroundImage = `url(${URL.createObjectURL(files[i])})`
 
         const style = document.createElement('style');
@@ -174,8 +181,22 @@ const exportMatrix = (clicked) => {
         const rowOut = [];
         for (let j = 0, cell; cell = row.cells[j]; j++) {
             const cellOut = []
-            for (let h = 0; h < row.cells[j].childNodes.length; h++)
-                cellOut.push(parseInt(row.cells[j].childNodes[h].id) || 0)
+            let collide;
+            for (let h = 0; h < row.cells[j].childNodes.length; h++){
+                if (row.cells[j].childNodes[h].classList.contains('collide')) 
+                    collide = true;
+                // cellOut.push(parseInt(row.cells[j].childNodes[h].id) != null ?  parseInt(row.cells[j].childNodes[h].id) : 0)
+                // console.log(parseInt(row.cells[j].childNodes[h].id) != null)
+                if (parseInt(row.cells[j].childNodes[h].id) != null) {
+                    cellOut.push(parseInt(row.cells[j].childNodes[h].id))
+                }     
+                else {
+                    cellOut.push(0)
+                }  
+            }
+            if ( collide)
+                cellOut.push(-1)
+            //console.log(row.cells[j].childNodes)  
             rowOut.push(cellOut)
         }
         output.push(rowOut);
