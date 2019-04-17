@@ -180,6 +180,16 @@ const updateGrid = e => {
 
 }
 
+const cleanArr = arr => {
+    for (let i = 0; i< arr.length; i++){
+        for (let j = 0; j< arr[i].length; j++){
+            let unique = [...new Set(arr[i][j])];
+            arr[i][j] = unique
+        }
+    }
+    return arr
+}
+
 const exportMatrix = clicked => {
     const output = [];
     for (let i = 0, row; row = table.rows[i]; i++) {
@@ -200,7 +210,8 @@ const exportMatrix = clicked => {
         }
         output.push(rowOut);
     }
-    localStorage.setItem('export', JSON.stringify(output))
+    const finalResult = cleanArr(output)
+    localStorage.setItem('export', JSON.stringify(finalResult))
     if (clicked) {
         const el = document.createElement('textarea');
         el.value = JSON.stringify(output);
@@ -214,7 +225,7 @@ const exportMatrix = clicked => {
         alert('copied to clipboard')
     };
 
-    return JSON.stringify(output)
+    return JSON.stringify(finalResult)
 }
 
 exportBtn.addEventListener('click', () => exportMatrix(true))
