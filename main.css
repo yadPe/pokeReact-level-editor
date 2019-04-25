@@ -1,9 +1,9 @@
 table td {
     width: 32px;
     height:32px;
-        padding: 0;
+    padding: 0;
     margin: 0;
-    border: 1px solid darkgray;
+    border: 0px solid darkgray;
     position:relative;
 }
 table span {
@@ -17,7 +17,17 @@ table span {
 }
 
 table{
+    border: 0px solid black;
+    border-spacing: 0px
+}
+
+table #assets{
     border: 1px solid black;
+    border-spacing: 1px
+}
+
+#assets td {
+    border: 1px solid darkgray;
 }
 
 #assetsContainer, #assets{
