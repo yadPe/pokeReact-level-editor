@@ -22,11 +22,55 @@ const loadExistingTable = (myArray) => {
         result += "<tr>";
         for (let j = 0; j < myArray[i].length; j++) {
             result += '<td>';
-            for (let h = 0; h < myArray[i][j].length; h++){
-                if (myArray[i][j][h] === -1){
+            for (let h = 0; h < myArray[i][j].length; h++) {
+                if (myArray[i][j][h] === -1) {
                     result += `<div class='dragItem collide' id='${myArray[i][j][h]}'></div>`;
                 } else {
                     result += `<div class='dragItem ' id='${myArray[i][j][h]}'></div>`;
+                }
+            }
+            result += '</td>'
+        }
+        result += "</tr>";
+    }
+    result += "</table>";
+    return result;
+}
+
+const regenerateMatrix = (myArray) => {
+
+    //const query = e.target.value
+    const tr = assetsTable.getElementsByTagName("td");
+    const assets = {};
+
+    for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("div")[0];
+        if (td) {
+            assets[td.id] = td.classList.toString();
+            console.log(td.classList.toString());
+        }
+    }
+    console.log(assets)
+
+
+    let result = "<table id='editorGrid'>";
+    for (let i = 0; i < myArray.length; i++) {
+        result += "<tr>";
+        for (let j = 0; j < myArray[i].length; j++) {
+            result += '<td>';
+            for (let h = 0; h < myArray[i][j].length; h++) {
+                let collide;
+                if (assets[myArray[i][j][h]]){
+
+                    if (assets[myArray[i][j][h]].indexOf('collide') > 0){
+                        collide = true;
+                    }
+                    if (myArray[i][j][h] === -1 && !collide) {
+                        result += `<div class='${assets[myArray[i][j][h]]}' id='${myArray[i][j][h] !== -1 ? myArray[i][j][h] : ''}'></div>`;
+                    }
+                    else {
+                        result += `<div class='${assets[myArray[i][j][h]]}' id='${myArray[i][j][h]}'></div>`;
+                    }
                 }
             }
             result += '</td>'
@@ -43,6 +87,7 @@ const dragItems = document.getElementsByClassName('dragItem');
 const assetsTable = document.getElementById('assets');
 const exportBtn = document.getElementById('exportBtn');
 const resetBtn = document.getElementById('resetBtn');
+const generateBtn = document.getElementById('genBtn');
 
 let lastClick = {};
 
@@ -75,17 +120,17 @@ resetBtn.addEventListener('click', resetEditor)
 
 const click = e => {
     if (e.target.id === 'editorGrid') return
-    if (e.target.classList.contains('dragItem') && e.target.parentElement.parentElement.parentElement.parentElement.id === 'assets'){
+    if (e.target.classList.contains('dragItem') && e.target.parentElement.parentElement.parentElement.parentElement.id === 'assets') {
         lastClick.id = e.target.id;
         //lastClick.category = e.target.classList[1]
         return
     }
-    if (lastClick.id && e.target.parentElement.nodeName == 'TR'){
+    if (lastClick.id && e.target.parentElement.nodeName == 'TR') {
         e.target.appendChild(document.getElementById(lastClick.id).cloneNode());
         return
     }
-    if (lastClick.id && e.target.parentElement.nodeName == 'TD'){
-        for (let i = 0; i< e.target.parentNode.childNodes.length; i++){
+    if (lastClick.id && e.target.parentElement.nodeName == 'TD') {
+        for (let i = 0; i < e.target.parentNode.childNodes.length; i++) {
             if (e.target.parentNode.childNodes[i].id === lastClick.id) return
             //if (e.target.parentNode.childNodes[i].classList.contains(lastClick.category)) return
         }
@@ -141,7 +186,7 @@ function loadFiles(e) {
         //     console.log(fileZIndex, zIndex)
         // }
         //console.log(fileCollide)
-        
+
 
         const row = assetsTable.rows[0]
         const cell = row.insertCell(0);
@@ -154,7 +199,7 @@ function loadFiles(e) {
         style.type = 'text/css';
         const css = `[id='${fileId}'] {background-image: url(${URL.createObjectURL(files[i])}); \n z-index: ${zIndex}}`
         style.appendChild(document.createTextNode(css));
-        document.head.appendChild(style); 
+        document.head.appendChild(style);
         tile.setAttribute('id', fileId)
         tile.addEventListener('click', click)
         cell.appendChild(tile)
@@ -181,8 +226,8 @@ const updateGrid = e => {
 }
 
 const cleanArr = arr => {
-    for (let i = 0; i< arr.length; i++){
-        for (let j = 0; j< arr[i].length; j++){
+    for (let i = 0; i < arr.length; i++) {
+        for (let j = 0; j < arr[i].length; j++) {
             let unique = [...new Set(arr[i][j])];
             arr[i][j] = unique
         }
@@ -197,14 +242,14 @@ const exportMatrix = clicked => {
         for (let j = 0, cell; cell = row.cells[j]; j++) {
             const cellOut = []
             let collide;
-            for (let h = 0; h < row.cells[j].childNodes.length; h++){
-                if (row.cells[j].childNodes[h].classList.contains('collide')) 
+            for (let h = 0; h < row.cells[j].childNodes.length; h++) {
+                if (row.cells[j].childNodes[h].classList.contains('collide'))
                     collide = true;
                 cellOut.push(parseInt(row.cells[j].childNodes[h].id) || 0);
             }
             if (row.cells[j].childNodes.length < 1)
                 cellOut.push(0)
-            if ( collide)
+            if (collide)
                 cellOut.push(-1)
             rowOut.push(cellOut)
         }
@@ -276,9 +321,12 @@ importBtn = document.getElementById('importBtn')
 
 
 const importArr = (e) => {
+    if (table){
+        table.remove()
+    }
     const ed = document.getElementById('editor');
     ed.innerHTML = loadExistingTable(JSON.parse(document.getElementById('import').value))
-    
+
     table = document.getElementById('editorGrid');
 
     table.addEventListener('click', click)
@@ -291,4 +339,27 @@ const importArr = (e) => {
 
 }
 
+const genArr = (e) => {
+    if (table){
+        table.remove()
+        
+    }
+    const ed = document.getElementById('editor');
+    ed.innerHTML = regenerateMatrix(JSON.parse(document.getElementById('import').value))
+
+    table = document.getElementById('editorGrid');
+
+    table.addEventListener('click', click)
+
+    table.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        if (!e.target.classList.contains('dragItem')) return
+        e.target.parentElement.removeChild(e.target)
+    })
+}
+
+generateBtn.addEventListener('click', genArr);
 importBtn.addEventListener('click', importArr)
+
+
+// (pokemon1.y > vue.y && pokemon1.y < vue.y + vue.height && pokemon1.x > vue.x && pokemon1.x < vue.x + vue.width)
